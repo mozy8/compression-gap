@@ -14,11 +14,17 @@
 
 
 ## Quick start
-1. Clone with submodules so that `third_party/LIBERO` is available:
+1. Make sure `third_party/LIBERO` is fetched as a submodule:
 
    ```bash
+   # fresh clone
    git clone --recurse-submodules git@github.com:Chaoqi-LIU/oat.git
-   # or, after a plain clone:
+   cd oat
+
+   # if you already cloned without --recurse-submodules
+   git submodule update --init --recursive
+
+   # after git pull, refresh submodule pointers
    git submodule update --init --recursive
    ```
 

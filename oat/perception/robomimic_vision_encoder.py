@@ -22,6 +22,8 @@ class RobomimicRgbEncoder(BaseObservationEncoder):
         use_group_norm: bool=True,
         eval_fixed_crop: bool = False,
         share_rgb_model: bool=False,
+        feature_dimension: int = 64,
+        num_kp: int = 32,
     ):
         super().__init__()
 
@@ -53,7 +55,7 @@ class RobomimicRgbEncoder(BaseObservationEncoder):
                 shape = (shape[0], crop_shape[0], crop_shape[1])
             net = rmbn.VisualCore(
                 input_shape=shape,
-                feature_dimension=64,
+                feature_dimension=feature_dimension,
                 backbone_class='ResNet18Conv',
                 backbone_kwargs={
                     'input_channels': shape[0],
@@ -61,7 +63,7 @@ class RobomimicRgbEncoder(BaseObservationEncoder):
                 },
                 pool_class='SpatialSoftmax',
                 pool_kwargs={
-                    'num_kp': 32,
+                    'num_kp': num_kp,
                     'temperature': 1.0,
                     'noise': 0.0,
                 },

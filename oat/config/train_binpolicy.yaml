@@ -28,6 +28,8 @@ policy:
     vision_encoder:
       _target_: oat.perception.robomimic_vision_encoder.RobomimicRgbEncoder
       crop_shape: [76, 76]
+      feature_dimension: 64
+      num_kp: 32
     
     state_encoder:
       _target_: oat.perception.state_encoder.ProjectionStateEncoder
