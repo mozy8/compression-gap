@@ -105,6 +105,25 @@ HYDRA_FULL_ERROR=1 MUJOCO_GL=egl uv run accelerate launch \
 ```
 set `lazy_eval=false` would evaluate policy during training every `training.rollout_every` epochs.
 
+You can also override the Robomimic vision encoder capacity from CLI (same keys work for `train_oatpolicy`, `train_binpolicy`, `train_fastpolicy`, and `train_diffpolicy`):
+
+```bash
+HYDRA_FULL_ERROR=1 MUJOCO_GL=egl uv run accelerate launch \
+    --num_machines [num_node] \
+    --multi_gpu \
+    --num_processes [num_gpu] \
+    scripts/run_workspace.py \
+    --config-name=train_oatpolicy \
+    task/policy=libero/libero10 \
+    task.policy.lazy_eval=false \
+    policy.action_tokenizer.checkpoint=[path/to/oattok.ckpt] \
+    policy.obs_encoder.vision_encoder.feature_dimension=256 \
+    policy.obs_encoder.vision_encoder.num_kp=128 \
+    policy.embed_dim=256 \
+    policy.n_layers=4 \
+    policy.n_heads=4
+```
+
 ## Evaluate OAT Policy on LIBERO
 
 Evaluate a trained checkpoint using `scripts/eval_policy_sim.py`:
