@@ -50,10 +50,14 @@ class OATPolicy(BasePolicy):
         # create AR model
         codebook_size = action_tokenizer.quantizer.codebook_size
         latent_horizon = action_tokenizer.latent_horizon
+        if hasattr(obs_encoder, "output_seq_len"):
+            max_cond_len = obs_encoder.output_seq_len(n_obs_steps)
+        else:
+            max_cond_len = n_obs_steps
         model = AutoregressiveModel(
             vocab_size=codebook_size + 1,  # +1 for <BOS>
             max_seq_len=latent_horizon + 1,
-            max_cond_len=n_obs_steps,
+            max_cond_len=max_cond_len,
             cond_dim=obs_feature_dim,
             n_layer=n_layers,
             n_head=n_heads,
