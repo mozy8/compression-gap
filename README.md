@@ -74,6 +74,12 @@ We provide a prebuilt `libero10` dataset on Hugging Face: [chaoqi-liu/libero10_N
 
    This merges `*.zarr` datasets related to `libero10` using `scripts/merge_data.py`, shuffles the episodes, and writes `data/libero/libero10_N{total}.zarr`.
 
+   For SigLIP experiments on `libero90`, compose the `libero90` multitask zarr as well:
+
+   ```bash
+   uv run scripts/compose_libero_multitask_dataset.py --multitask_name libero90 --root_dir data/libero
+   ```
+
 ## Train OAT Tokenizer
 
 After you have `data/libero/libero10_N{n}.zarr` ready, train the action tokenizer that OAT policies consume:
@@ -104,6 +110,21 @@ HYDRA_FULL_ERROR=1 MUJOCO_GL=egl uv run accelerate launch \
     policy.action_tokenizer.checkpoint=[path/to/oattok.ckpt]
 ```
 set `lazy_eval=false` would evaluate policy during training every `training.rollout_every` epochs.
+
+For SigLIP-based policy training (default task: `libero90` in `train_oatpolicy_siglip`):
+
+```bash
+HYDRA_FULL_ERROR=1 MUJOCO_GL=egl uv run accelerate launch \
+    --num_machines [num_node] \
+    --multi_gpu \
+    --num_processes [num_gpu] \
+    scripts/run_workspace.py \
+    --config-name=train_oatpolicy_siglip \
+    task.policy.lazy_eval=false \
+    policy.action_tokenizer.checkpoint=[path/to/oattok.ckpt]
+```
+
+The SigLIP config freezes the vision encoder (`optimizer.obs_enc_lr=0.0`) and uses `batch_size=64` by default.
 
 You can also override the Robomimic vision encoder capacity from CLI (same keys work for `train_oatpolicy`, `train_binpolicy`, `train_fastpolicy`, and `train_diffpolicy`):
 
